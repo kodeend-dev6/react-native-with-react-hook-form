@@ -1,38 +1,51 @@
 import React from 'react';
-import {Control, Controller, FieldErrors, FieldValues} from 'react-hook-form';
-import {StyleSheet, TextInput, TextInputProps} from 'react-native';
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  FieldValues,
+  Path,
+} from 'react-hook-form';
+import {StyleSheet, Text, TextInput, TextInputProps} from 'react-native';
 
-interface FormInputControllerProps {
-  control: Control<FieldValues>;
-  errors: FieldErrors<FieldValues>;
-  name: string;
+interface FormInputControllerProps<T extends FieldValues> {
+  control: Control<T>;
+  errors: FieldErrors<T>;
+  name: Path<T>;
   placeholder: string;
   other?: TextInputProps;
 }
 
-const FormInputController = ({
+const FormInputController = <T extends FieldValues>({
   control,
   name,
   placeholder,
   errors,
   other,
-}: FormInputControllerProps) => {
+}: FormInputControllerProps<T>) => {
+  const errorMessage = errors[name]?.message;
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({field: {onChange, onBlur, value}}) => (
-        <TextInput
-          style={styles.input}
-          placeholder={placeholder}
-          placeholderTextColor="#00453"
-          onBlur={onBlur}
-          onChangeText={onChange}
-          value={value}
-          {...other}
-        />
+    <>
+      <Controller
+        control={control}
+        name={name}
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput
+            style={styles.input}
+            placeholder={placeholder}
+            placeholderTextColor="#00453"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            {...other}
+          />
+        )}
+      />
+
+      {errorMessage && typeof errorMessage === 'string' && (
+        <Text style={styles.errorText}>{errorMessage}</Text>
       )}
-    />
+    </>
   );
 };
 
@@ -47,6 +60,11 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 16,
     marginBottom: 10,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    marginTop: 2,
   },
 });
 

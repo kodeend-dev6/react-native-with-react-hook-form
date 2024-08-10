@@ -5,30 +5,42 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import logo from './assests/logo.png';
 import {Controller, useForm} from 'react-hook-form';
 import FormInputController from './FormInputController';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {formSchema} from './formSchema';
+
+interface FormValues {
+  email: string;
+  password: string;
+}
 
 const AdvancedLoginPage = () => {
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(formSchema),
+  });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (data: FormValues) => {
+    // console.log(data);
+
+    Alert.alert('Form Data', JSON.stringify(data));
   };
   return (
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
-      <Text style={styles.headingText}>React Hook Form</Text>
+      <Text style={styles.headingText}>A Software Platform</Text>
 
       <FormInputController
         control={control}
-        name="username"
-        placeholder="Username"
+        name="email"
+        placeholder="Email"
         errors={errors}
       />
       <FormInputController
@@ -40,7 +52,7 @@ const AdvancedLoginPage = () => {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-        <Text style={styles.buttonText}>Submit</Text>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
       <Text style={styles.normalText}>Create new account.</Text>
